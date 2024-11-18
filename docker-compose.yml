@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+
+  frontend:
+    build:
+      context: ./nextjs
+      args:
+        NEXT_PUBLIC_BACKEND_ENDPOINT: ${NEXT_PUBLIC_BACKEND_ENDPOINT}
+    container_name: "frontend"
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    networks:
+      - transnet
+
+networks:
+  transnet:

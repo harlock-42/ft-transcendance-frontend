@@ -1,0 +1,85 @@
+name: Build and Push Docker image
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ca-certificates \
+            curl \
+            gnupg \
+            lsb-release
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo \
+            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+      - name: Log in to Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - name: build image
+        env:
+          NEXT_PUBLIC_BACKEND_ENDPOINT: ${{ vars.NEXT_PUBLIC_BACKEND_ENDPOINT}}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          K3S_DEPLOYMENT_NAME: ${{ vars.K3S_DEPLOYMENT_NAME }}
+          K3S_NAMESPACE: ${{ vars.K3S_NAMESPACE }}
+        run: |
+          docker build -t $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:latest \
+          --build-arg NEXT_PUBLIC_BACKEND_ENDPOINT=$NEXT_PUBLIC_BACKEND_ENDPOINT \
+          .
+
+      - name: Tag Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          K3S_DEPLOYMENT_NAME: ${{ vars.K3S_DEPLOYMENT_NAME }}
+          K3S_NAMESPACE: ${{ vars.K3S_NAMESPACE }}
+        run: |
+          docker tag $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:latest $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:${{ github.sha }}
+          docker tag $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:latest $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:latest
+
+      - name: Push Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          K3S_DEPLOYMENT_NAME: ${{ vars.K3S_DEPLOYMENT_NAME }}
+          K3S_NAMESPACE: ${{ vars.K3S_NAMESPACE }}
+        run: |
+          docker push $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:${{ github.sha }}
+          docker push $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:latest
+
+
+      - name: Logout from Docker Hub
+        run: docker logout
+
+      - name: Update deployments
+        env:
+          VPS_PWD: ${{ secrets.VPS_PWD }}
+          VPS_IP: ${{ vars.VPS_IP }}
+          K3S_DEPLOYMENT_NAME: ${{ vars.K3S_DEPLOYMENT_NAME }}
+          K3S_NAMESPACE: ${{ vars.K3S_NAMESPACE }}
+        run: |
+          sshpass -p $VPS_PWD ssh -o StrictHostKeyChecking=no root@$VPS_IP "kubectl rollout restart deployment $K3S_DEPLOYMENT_NAME -n $K3S_NAMESPACE"
