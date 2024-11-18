@@ -51,7 +51,7 @@ jobs:
         run: |
           docker build -t $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:latest \
           --build-arg NEXT_PUBLIC_BACKEND_ENDPOINT=$NEXT_PUBLIC_BACKEND_ENDPOINT \
-          .
+          ./nextjs
 
       - name: Tag Docker image
         env:
