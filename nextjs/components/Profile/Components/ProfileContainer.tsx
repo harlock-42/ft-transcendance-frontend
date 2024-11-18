@@ -16,6 +16,7 @@ const ProfileContainer = () => {
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const infoFetchedRef = useRef(false);
     const router = useRouter();
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
 
     useEffect(() => {
         if (userInfo && userInfo.nickname === router.query.id) {
@@ -30,7 +31,7 @@ const ProfileContainer = () => {
 	}, [userInfo, router.query.id]);
 
     async function assignUserData() {
-        axios.get('http://localhost:3000/users/profil/' + router.query.id, {
+        axios.get(`${apiUrl}/users/profil/` + router.query.id, {
             headers: {
                 'Authorization': `Bearer ${getCookie('token')}`
             }

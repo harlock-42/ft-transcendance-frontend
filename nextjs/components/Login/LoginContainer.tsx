@@ -15,6 +15,7 @@ export const LoginContainer = ({loadRegister}: Props) => {
     const inputPassRef = useRef<HTMLInputElement | null>(null);
     const router = useRouter();
     const loginUrl = process.env.NEXT_PUBLIC_API_LOGIN_URL!;
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
 
     async function Login() {
         if (inputNickRef.current != null && inputNickRef.current.value != ""
@@ -24,7 +25,7 @@ export const LoginContainer = ({loadRegister}: Props) => {
                 password: inputPassRef.current.value
             }
             axios({
-                url: 'http://localhost:3000/auth/login/local',
+                url: `${apiUrl}/auth/login/local`,
                 method: 'post',
                 data: data
             })

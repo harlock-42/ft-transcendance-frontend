@@ -26,10 +26,11 @@ const EditProfile = ({userInfo, setUserInfo, loadProfile}: Props) => {
         const file: any = formData.get('file');
         const newNickname: string | undefined = formData.get('newNickname')?.toString();
         let responseImage: AxiosResponse | undefined = undefined;
+        const apiUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
 
         if (file !== null && file.size > 0) {
             try {
-                responseImage = await axios('http://localhost:3000/users/photo/me', {
+                responseImage = await axios(`${apiUrl}/users/photo/me`, {
                     method: "post",
                     data: formData,
                     headers: {
@@ -53,7 +54,7 @@ const EditProfile = ({userInfo, setUserInfo, loadProfile}: Props) => {
         }
         if (newNickname !== undefined && newNickname.length > 0) {
             try {
-                await axios('http://localhost:3000/users/nickname/me', {
+                await axios(`${apiUrl}/users/nickname/me`, {
                     method: "post",
                     data: {
                         'nickname': newNickname

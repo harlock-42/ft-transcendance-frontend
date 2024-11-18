@@ -9,6 +9,7 @@ type Props = {
 
 export const RegisterContainer = ({loadLogin}: Props) => {
 	const router = useRouter()
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
 
 	async function submitRegister(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
@@ -18,7 +19,7 @@ export const RegisterContainer = ({loadLogin}: Props) => {
 			nickname: formData.get('nickname')!.toString(),
 			password: formData.get('password')!.toString()
 		}
-		fetch('http://localhost:3000/auth/register/local', {
+		fetch(`${apiUrl}/auth/register/local`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

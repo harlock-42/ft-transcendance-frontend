@@ -12,12 +12,13 @@ type Props = {
 }
 
 export const EditTFA = ({userInfo, setUserInfo}: Props) => {
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
     const router = useRouter();
     const [TFAStatus, setTFAStatus] = useState<boolean>(userInfo.twoFactorAuth.activate);
     const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
 
     function enableTFA() {
-        fetch('http://localhost:3000/users/tfa/activate', {
+        fetch(`${apiUrl}/users/tfa/activate`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${getCookie('token')}`
@@ -39,7 +40,7 @@ export const EditTFA = ({userInfo, setUserInfo}: Props) => {
     }
 
     function disableTFA() {
-        fetch('http://localhost:3000/users/tfa/unActivate', {
+        fetch(`${apiUrl}/users/tfa/unActivate`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${getCookie('token')}`
@@ -65,7 +66,7 @@ export const EditTFA = ({userInfo, setUserInfo}: Props) => {
     }
 
     function getQrCode() {
-        fetch('http://localhost:3000/users/tfa/qrcode', {
+        fetch(`${apiUrl}/users/tfa/qrcode`, {
             headers: {
                 'Authorization': `Bearer ${getCookie('token')}`
             }
@@ -92,7 +93,7 @@ export const EditTFA = ({userInfo, setUserInfo}: Props) => {
         const code = formData.get('code')?.toString();
 
         if (code) {
-            axios('http://localhost:3000/users/tfa/checkCode', {
+            axios(`${apiUrl}/users/tfa/checkCode`, {
                 method: 'POST',
                 data: {
                     'code': code

@@ -7,11 +7,12 @@ export default function CheckTfa({ token }: { token: any }) {
     const [check, setCheck] = useState<boolean>(false)
     const codeRef = useRef<HTMLInputElement | null>(null)
     const router = useRouter()
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
 
     useEffect(() => {
         async function fetchData() {
             if (codeRef && codeRef.current && codeRef.current.value !== '') {
-                const response = await axios('http://localhost:3000/users/tfa/checkCode', {
+                const response = await axios(`${apiUrl}/users/tfa/checkCode`, {
                     method: 'POST',
                     data: {
                         'code': codeRef.current.value

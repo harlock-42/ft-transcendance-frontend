@@ -25,11 +25,12 @@ const Layout=({ children, displayHeader }: LayoutProps) => {
 	const [display, setDisplay] = useState<boolean>(false);
 	const router = useRouter();
 	const componentLoaded = useRef(false);
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
 
 	useEffect(() => {
 
 		async function fetchNickname() {
-			const response = await fetch("http://localhost:3000"+'/users/me/nickname', {
+			const response = await fetch(`${apiUrl}`+'/users/me/nickname', {
 				headers: {
 					'Authorization': `Bearer ${getCookie('token')}`
 				}

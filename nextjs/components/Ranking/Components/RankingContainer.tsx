@@ -11,6 +11,7 @@ export const RankingContainer = () => {
     const router = useRouter();
     const rankingArrRef = useRef<RankingInfo[]>([]);
     const [isLoaded, setLoaded] = useState<boolean>(false);
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
 
     useEffect(() => {
         if (!router.isReady) {
@@ -21,7 +22,7 @@ export const RankingContainer = () => {
     }, [router.isReady])
 
     function assignRankingData() {
-        axios.get('http://localhost:3000/users/ranking', {
+        axios.get(`${apiUrl}/users/ranking`, {
             headers: {
                 'Authorization': `Bearer ${getCookie('token')}`
             }
