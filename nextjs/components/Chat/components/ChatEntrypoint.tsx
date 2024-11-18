@@ -9,7 +9,7 @@ import { GlobalDataContext } from "../../Utils/Layout";
 import { UsersArea } from "./UsersArea";
 import { ScrollStatus } from "./MessagesArea";
 
-const ChatENDPOINT = process.env.NEXT_PUBLIC_GAME_ENDPOINT || "http://localhost:8100";
+const ChatENDPOINT = process.env.NEXT_PUBLIC_CHAT_ENDPOINT || "https://chat.api.trans.harlock.fr";
 
 export const ChatEntrypoint = () => {
     const globalData = useContext(GlobalDataContext)!;

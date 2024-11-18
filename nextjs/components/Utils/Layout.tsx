@@ -16,7 +16,7 @@ interface GlobalData {
 	gameSocket?: Socket;
 }
 
-const SocialENDPOINT=process.env.NEXT_PUBLIC_GAME_ENDPOINT || "http://localhost:8080";
+const SocialENDPOINT=process.env.NEXT_PUBLIC_CHAT_ENDPOINT || "https://chat.api.trans.harlock.fr";
 
 export const GlobalDataContext=createContext<GlobalData|null>(null);
 

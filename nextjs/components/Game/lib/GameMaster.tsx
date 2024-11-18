@@ -5,7 +5,7 @@ import GameMenuMaster from "./GameMenuMaster";
 import GameSpectate from "../components/Container/GameSpectate";
 import GameFriends from "../components/Container/GameFriends";
 import FindGameComponent from "../components/Container/FindGameComponent";
-const Game_ENDPOINT = process.env.NEXT_PUBLIC_GAME_ENDPOINT || "http://localhost:8080";
+const Game_ENDPOINT = process.env.NEXT_PUBLIC_GAME_ENDPOINT || "https://game.api.trans.harlock.fr";
 
 export interface FriendGameInfo {
     mapMode: boolean;
