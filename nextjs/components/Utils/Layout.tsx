@@ -16,7 +16,7 @@ interface GlobalData {
 	gameSocket?: Socket;
 }
 
-const SocialENDPOINT="http://localhost:8100";
+const SocialENDPOINT=process.env.NEXT_PUBLIC_GAME_ENDPOINT;
 
 export const GlobalDataContext=createContext<GlobalData|null>(null);
 

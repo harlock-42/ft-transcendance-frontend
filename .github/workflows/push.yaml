@@ -48,9 +48,13 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           K3S_DEPLOYMENT_NAME: ${{ vars.K3S_DEPLOYMENT_NAME }}
           K3S_NAMESPACE: ${{ vars.K3S_NAMESPACE }}
+          NEXT_PUBLIC_GAME_ENDPOINT: ${{ vars.NEXT_PUBLIC_GAME_ENDPOINT }}
+          NEXT_PUBLIC_CHAT_ENDPOINT: ${{ vars.NEXT_PUBLIC_CHAT_ENDPOINT }}
         run: |
           docker build -t $DOCKER_USERNAME/$K3S_NAMESPACE-$K3S_DEPLOYMENT_NAME:latest \
           --build-arg NEXT_PUBLIC_BACKEND_ENDPOINT=$NEXT_PUBLIC_BACKEND_ENDPOINT \
+          --build-arg NEXT_PUBLIC_GAME_ENDPOINT=$NEXT_PUBLIC_GAME_ENDPOINT \
+          --build-arg NEXT_PUBLIC_CHAT_ENDPOINT=$NEXT_PUBLIC_CHAT_ENDPOINT \
           ./nextjs
 
       - name: Tag Docker image

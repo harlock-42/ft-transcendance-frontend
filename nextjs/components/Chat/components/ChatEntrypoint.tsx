@@ -9,7 +9,7 @@ import { GlobalDataContext } from "../../Utils/Layout";
 import { UsersArea } from "./UsersArea";
 import { ScrollStatus } from "./MessagesArea";
 
-const ChatENDPOINT = "http://127.0.0.1:8100";
+const ChatENDPOINT = process.env.NEXT_PUBLIC_GAME_ENDPOINT;
 
 export const ChatEntrypoint = () => {
     const globalData = useContext(GlobalDataContext)!;
